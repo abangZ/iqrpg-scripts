@@ -5,6 +5,8 @@
 // @author       ABang
 // @match        https://www.iqrpg.com/game.html
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=iqrpg.com
+// @updateURL    https://raw.githubusercontent.com/abangZ/iqrpg-scripts/main/iqrpg-copilot.user.js
+// @downloadURL  https://raw.githubusercontent.com/abangZ/iqrpg-scripts/main/iqrpg-copilot.user.js
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
