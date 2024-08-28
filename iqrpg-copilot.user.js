@@ -5,22 +5,27 @@
 // @author       ABang
 // @match        https://www.iqrpg.com/game.html
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=iqrpg.com
-// @grant        none
-// @updateURL    https://raw.githubusercontent.com/abangZ/iqrpg-scripts/main/iqrpg-copilot.user.js
-// @downloadURL  https://raw.githubusercontent.com/abangZ/iqrpg-scripts/main/iqrpg-copilot.user.js
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_registerMenuCommand
 // ==/UserScript==
 
 console.log('### iqrpg copilot loaded ###');
 
 // 是否自动进入采集事件
 const autoGatherer = true;
+let pushKey = GM_getValue('pushKey', '');
 
 // const autoAction = 1 // 1.战斗 2.采矿 3.伐木 4.采石 // 直接读取 defaultAction，无需手动配置了
 
 function init() {
+
     if (Notification.permission !== "denied") {
         Notification.requestPermission().then(console.log);
     }
+
+    initMenu()
+
     const {ele} = getAutoEle()
     if (ele) {
         // 已经进入游戏页面
@@ -31,10 +36,20 @@ function init() {
     }
 }
 
+function initMenu() {
+    GM_registerMenuCommand("设置推送Key", function () {
+        const input = prompt("请在下方输入你的key(获取：https://sct.ftqq.com/)：")
+        if (input) {
+            pushKey = input;
+            GM_setValue('pushKey', input)
+        }
+    });
+}
+
 function initAutoAction() {
     console.log('initAuto')
 
-    const timer = setInterval(e => {
+    setInterval(_ => {
         // 检查是否有谷歌验证码
         if (checkRecaptcha()) {
             console.log('recaptcha')
@@ -143,7 +158,7 @@ function checkRaid() {
     const ele = document.querySelector('a[href="/land/raids"].yellow-text')
     if (ele) {
         if (!isNotifiedRaid) {
-            new Notification('有raid', {
+            new Notification('扫荡完毕', {
                 body: '请手动处理'
             });
             isNotifiedRaid = true;
@@ -154,6 +169,7 @@ function checkRaid() {
 }
 
 let isNotifiedRecaptcha = false;
+let isPushed = false;
 
 function checkRecaptcha() {
     const result = !!document.querySelector('#g-recaptcha')
@@ -162,6 +178,9 @@ function checkRecaptcha() {
             body: '请手动验证'
         });
         isNotifiedRecaptcha = true;
+        if (!isPushed && pushKey) {
+            fetch(`https://sctapi.ftqq.com/${pushKey}.send?title=iqrpg出现验证码辣`).then(() => console.log('pushed'))
+        }
 
         // 1分钟后重置, 再次提醒，防止看漏
         setTimeout(() => {
@@ -170,6 +189,9 @@ function checkRecaptcha() {
     }
     if (!result) {
         isNotifiedRecaptcha = false
+        if (isPushed) {
+            isPushed = false
+        }
     }
     return result;
 }
