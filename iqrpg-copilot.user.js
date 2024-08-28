@@ -6,6 +6,8 @@
 // @match        https://www.iqrpg.com/game.html
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=iqrpg.com
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/abangZ/iqrpg-scripts/main/iqrpg-copilot.user.js
+// @downloadURL  https://raw.githubusercontent.com/abangZ/iqrpg-scripts/main/iqrpg-copilot.user.js
 // ==/UserScript==
 
 console.log('### iqrpg copilot loaded ###');
