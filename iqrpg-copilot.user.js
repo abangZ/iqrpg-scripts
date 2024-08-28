@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         iqrpg-copilot
-// @version      0.0.1
+// @version      0.0.2
 // @description  auto loop/boss
 // @author       ABang
 // @match        https://www.iqrpg.com/game.html
