@@ -39,7 +39,7 @@ function init() {
 }
 
 function initMenu() {
-    GM_registerMenuCommand("设置推送Key", function () {
+    GM_registerMenuCommand(pushKey?`当前key:${pushKey.substring(0,5)}...`: "设置推送Key", function () {
         const input = prompt("请在下方输入你的key(获取：https://sct.ftqq.com/)：")
         if (input) {
             pushKey = input;
