@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         iqrpg-copilot
-// @version      0.0.2
+// @version      0.0.3
 // @description  auto loop/boss
 // @author       ABang
 // @match        https://www.iqrpg.com/game.html
@@ -181,6 +181,7 @@ function checkRecaptcha() {
         });
         isNotifiedRecaptcha = true;
         if (!isPushed && pushKey) {
+            isPushed = true;
             fetch(`https://sctapi.ftqq.com/${pushKey}.send?title=iqrpg出现验证码辣`).then(() => console.log('pushed'))
         }
 
