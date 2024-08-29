@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         iqrpg-copilot
-// @version      0.0.5
+// @version      0.0.6
 // @description  auto loop/boss
 // @author       ABang
 // @match        https://www.iqrpg.com/game.html
@@ -17,8 +17,7 @@ console.log('### iqrpg copilot loaded ###');
 // 是否自动进入采集事件
 let autoGatherer = GM_getValue('autoGatherer', 'yes') === 'yes';
 let pushKey = GM_getValue('pushKey', '');
-
-// const autoAction = 1 // 1.战斗 2.采矿 3.伐木 4.采石 // 直接读取 defaultAction，无需手动配置了
+let resetActionCount = GM_getValue('resetCount', 30)
 
 function init() {
 
@@ -28,6 +27,7 @@ function init() {
 
     initPushKeyMenu()
     initSettingMenu()
+    initActionCountMenu();
 
     const {ele} = getAutoEle()
     if (ele) {
@@ -37,6 +37,21 @@ function init() {
     } else {
         setTimeout(init, 2000)
     }
+}
+
+function initActionCountMenu() {
+    GM_registerMenuCommand(`剩余行动低于${resetActionCount}时随机重置`, function () {
+        const input = prompt("请在下方输入你的计数，填空则保持原值：")
+
+        if (input) {
+            resetActionCount = parseInt(input);
+            GM_setValue('resetCount', resetActionCount)
+        }
+
+        initActionCountMenu();
+    }, {
+        id: 'setting_reset_count'
+    });
 }
 
 function initSettingMenu() {
@@ -77,8 +92,8 @@ function initAutoAction() {
         checkRaid();
 
         const {ele, left} = getAutoEle()
-        if (left < 100) {
-            if (Math.random() * 100 > left) {
+        if (left < resetActionCount) {
+            if (Math.random() * resetActionCount >= left) {
                 console.log(left, 'click')
                 ele.click()
             }
@@ -89,13 +104,16 @@ function initAutoAction() {
 
 let isFighting = false;
 let isDoingEvent = false;
+let lastBossCount = 0;
 
 function checkEvent() {
     let bossEle;
     let eventEle;
+    let currentBossCount = 0
     document.querySelectorAll(".main-section__title.clickable.highlighted").forEach(ele => {
         const txt = ele.querySelector('p').innerText
         if (txt === 'Boss') {
+            currentBossCount++;
             bossEle = ele.parentElement.querySelector('.clickable.boss');
         }
         if (['Event', '事件'].includes(txt)) {
@@ -103,6 +121,13 @@ function checkEvent() {
         }
     })
     if (bossEle) {
+        if (currentBossCount > lastBossCount) {
+            console.log(`${currentBossCount} boss`)
+        }
+        if (currentBossCount < lastBossCount) {
+            console.log('少了一个boss')
+            isFighting = false;
+        }
         if (!isFighting) {
             console.log('goto boss')
             bossEle.click()
@@ -126,8 +151,7 @@ function checkEvent() {
         console.log('event 结束了')
         isDoingEvent = false;
     }
-
-
+    lastBossCount = currentBossCount;
 }
 
 
