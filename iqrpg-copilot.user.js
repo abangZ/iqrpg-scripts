@@ -15,7 +15,7 @@
 console.log('### iqrpg copilot loaded ###');
 
 // 是否自动进入采集事件
-const autoGatherer = true;
+let autoGatherer = GM_getValue('autoGatherer', 'yes') === 'yes';
 let pushKey = GM_getValue('pushKey', '');
 
 // const autoAction = 1 // 1.战斗 2.采矿 3.伐木 4.采石 // 直接读取 defaultAction，无需手动配置了
@@ -26,7 +26,8 @@ function init() {
         Notification.requestPermission().then(console.log);
     }
 
-    initMenu()
+    initPushKeyMenu()
+    initSettingMenu()
 
     const {ele} = getAutoEle()
     if (ele) {
@@ -38,13 +39,27 @@ function init() {
     }
 }
 
-function initMenu() {
-    GM_registerMenuCommand(pushKey?`当前key:${pushKey.substring(0,5)}...`: "设置推送Key", function () {
-        const input = prompt("请在下方输入你的key(获取：https://sct.ftqq.com/)：")
-        if (input) {
-            pushKey = input;
-            GM_setValue('pushKey', input)
-        }
+function initSettingMenu() {
+    GM_registerMenuCommand(`自动采集事件：${autoGatherer ? '已开启' : "已关闭"}`, function () {
+        autoGatherer = !autoGatherer;
+        GM_setValue('autoGatherer', autoGatherer ? 'yes' : 'no');
+        initSettingMenu();
+    }, {
+        id: "setting_auto_gatherer",
+    });
+}
+
+function initPushKeyMenu() {
+
+    GM_registerMenuCommand(pushKey ? `当前key:${pushKey.substring(0, 8)}...` : "设置推送Key", function () {
+        const input = prompt("请在下方输入你的key,填空则关闭推送(获取：https://sct.ftqq.com/)：")
+
+        pushKey = input || '';
+        GM_setValue('pushKey', input)
+
+        initPushKeyMenu();
+    }, {
+        id: 'setting_push_key'
     });
 }
 
