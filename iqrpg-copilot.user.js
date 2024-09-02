@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         iqrpg-copilot
-// @version      0.0.6
+// @version      0.0.7
 // @description  auto loop/boss
 // @author       ABang
 // @match        https://www.iqrpg.com/game.html
@@ -12,10 +12,15 @@
 // @grant        GM_registerMenuCommand
 // ==/UserScript==
 
+/**
+ * 使用本脚本可能违反游戏服务条款，导致账号封禁或其他后果，作者不承担任何责任。请用户自行评估风险。
+ */
+
 console.log('### iqrpg copilot loaded ###');
 
 // 是否自动进入采集事件
 let autoGatherer = GM_getValue('autoGatherer', 'yes') === 'yes';
+let autoBoss = GM_getValue('autoBoss', true) ;
 let pushKey = GM_getValue('pushKey', '');
 let resetActionCount = GM_getValue('resetCount', 30)
 
@@ -61,6 +66,14 @@ function initSettingMenu() {
         initSettingMenu();
     }, {
         id: "setting_auto_gatherer",
+    });
+
+    GM_registerMenuCommand(`自动Boss事件：${autoBoss ? '已开启' : "已关闭"}`, function () {
+        autoBoss = !autoBoss;
+        GM_setValue('autoBoss', autoBoss );
+        initSettingMenu();
+    }, {
+        id: "setting_auto_boss",
     });
 }
 
@@ -113,7 +126,7 @@ function checkEvent() {
     document.querySelectorAll(".main-section__title.clickable.highlighted").forEach(ele => {
         const txt = ele.querySelector('p').innerText
         if (txt === 'Boss') {
-            currentBossCount++;
+            currentBossCount=ele.parentElement.querySelectorAll('.clickable.boss').length;
             bossEle = ele.parentElement.querySelector('.clickable.boss');
         }
         if (['Event', '事件'].includes(txt)) {
@@ -128,7 +141,7 @@ function checkEvent() {
             console.log('少了一个boss')
             isFighting = false;
         }
-        if (!isFighting) {
+        if (!isFighting && autoBoss) {
             console.log('goto boss')
             bossEle.click()
             isFighting = true;
