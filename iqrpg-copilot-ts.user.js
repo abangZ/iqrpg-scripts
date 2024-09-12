@@ -121,7 +121,7 @@ async function checkEvent() {
         bossData.forEach(e => {
             // console.log('boss',e.id, (e.hpRemaining / e.hpMax).toFixed(3))
             if (e.hpRemaining / e.hpMax > 0.2) {
-                log('new boss')
+                console.log('new boss')
                 window.location.reload();
             }
         })
@@ -159,6 +159,8 @@ async function doLabyrinth() {
             break;
         } else if (i === 9) {
             console.log('没发现迷宫按钮')
+            // 去首页
+            document.querySelector('a[href="/"]').click()
             return;
         }
     }
