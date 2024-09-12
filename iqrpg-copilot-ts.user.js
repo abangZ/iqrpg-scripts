@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         iqrpg-copilot-ts
-// @version      0.0.2
+// @version      0.0.3
 // @description  auto loop/boss
 // @author       ABang
 // @match        https://test.iqrpg.com/game.html
@@ -172,6 +172,7 @@ async function doLabyrinth() {
         // 检查是否完成
         if (checkLabyrinthBox()) {
             console.log('doLabyrinth success')
+            document.querySelector('a[href="/"]').click()
             return;
         }
     }
