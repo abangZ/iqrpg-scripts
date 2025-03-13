@@ -246,6 +246,39 @@ paths:
                     $ref: '#/components/schemas/BlockInfo'
         '401':
           description: Invalid API Key
+  /v1/indexer/height/{height}/block2:
+    get:
+      tags:
+        - Blocks
+      summary: Get block info by block height. [test]
+      parameters:
+        - name: height
+          description: Block height
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    enum:
+                      - 0
+                      - -1
+                  msg:
+                    type: string
+                    example: OK
+                  data:
+                    $ref: '#/components/schemas/BlockInfo'
+        '401':
+          description: Invalid API Key
   /v1/indexer/block/id/{blockid}:
     get:
       tags:
