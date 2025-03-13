@@ -217,7 +217,7 @@ paths:
     get:
       tags:
         - Blocks
-      summary: Get block info by block height.
+      summary: Get block info by block height ,sync test.
       parameters:
         - name: height
           description: Block height
